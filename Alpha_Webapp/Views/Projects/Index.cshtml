@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Projects";
+}
+
+<div id="projects" class="middle">
+    <div class="project-header">
+        <h2>Projects</h2>
+        <button class="btn" data-type="modal" data-target="#add-project-modal">
+            <i class="fa-duotone fa-solid fa-plus"></i>
+            <span>Add Projects</span>
+        </button>
+    </div>
+
+    <div class="tab-bar">
+        <a class="nav-tab active" href="#">ALL [0]</a>
+        <a class="nav-tab" href="#">STARTED [0]</a>
+        <a class="nav-tab" href="#">COMPELETED [0]</a>
+    </div>
+
+
+
+    <div class="project-list" data-project-id="2">
+
+        @await Html.PartialAsync("ListItems/_ProjectListItemPartial")
+        @await Html.PartialAsync("ListItems/_ProjectListItemPartial")
+
+    </div>
+
+    @await Html.PartialAsync("Modals/_AddProjectModalPartial")
+    @await Html.PartialAsync("Modals/_EditProjectModalPartial")
+</div>

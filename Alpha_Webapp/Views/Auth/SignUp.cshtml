@@ -5,16 +5,17 @@
 }
 
 
-<div class="surface regi-surface">
-    <div class="signup-container">
+<div class="surface">
+    <div class="form-header"><h1>Create Account</h1> </div>
+
+    <div class="card-container">
+
         <form asp-controller="Auth" asp-action="SignUp" novalidate>
 
-            <div class="form-headline">
-                <h1>Create Account</h1>
-            </div>
+
 
             <div class="form-input">
-                <label asp-for ="FullName" ></label>
+                <label asp-for="FullName"></label>
                 <input asp-for="FullName">
                 <span asp-validation-for="FullName"> </span>
             </div>
@@ -42,12 +43,15 @@
 
             <div class="remember-me">
                 <input type="checkbox" checked>
-                <label for="">I accept <a href="#">Terms and Conditions</a></label>
+                <label asp-for="TermsAndConditions">I accept <a href="#">Terms and Conditions</a></label>
             </div>
 
         </form>
-        <p class="signin-text">Alreadyhave an account? <a href="#">Log in</a></p>
+
     </div>
+
+    <div class="footer-text">Already have an account?  <a href="/login.html">Login</a></div>
+
 </div>
 
 @await Html.PartialAsync("_ValidationScripts")
