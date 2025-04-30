@@ -2,7 +2,7 @@
 
 namespace Alpha_Webapp.Models;
 
-public class SignUpFormModel
+public class SignUpViewModel
 {
 
     [Display(Name = "FullName", Prompt = "Enter Your fullname")]

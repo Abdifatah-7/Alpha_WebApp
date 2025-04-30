@@ -1,18 +1,18 @@
-﻿@model SignInFormModel
+﻿@model SignInViewModel
 
 @{
-    ViewData["Title"] = "Sign In";
+    Layout = "_CenterWrapperLayout";
+    ViewData["Title"] = "Log in";
 }
 
 
 
 <div id="login-surface" class="surface">
-    <div class="form-header"> <h1>Log in</h1> </div>
+    <div class="form-header"> <h1>@ViewData["Title"]</h1> </div>
 
     <div class="card-container" >
 
         <form method="post" asp-controller="Auth" asp-action="SignIn" novalidate>
-            <h1 class="form-headline">Log in</h1>
 
             <div class="form-input">
                 <label asp-for="Email"></label>
@@ -27,7 +27,7 @@
             </div>
 
             <div class="remember-me">
-                <input type="checkbox" checked>
+                <input asp-for="RememberMe" >
                 <label for="">Remember Me</label>
             </div>
 
@@ -36,5 +36,5 @@
         </form>
     </div>
 
-    <div class="footer-text">Don't have an account? <a href="#">Sign Up</a></div>
+    <div class="footer-text">Don't have an account? <a asp-controller="Auth" asp-action="SignUp">Sign Up</a></div>
 </div>

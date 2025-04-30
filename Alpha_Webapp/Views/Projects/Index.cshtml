@@ -1,10 +1,11 @@
 ﻿@{
+    Layout = "_BackOfficeWrapperLayout";
     ViewData["Title"] = "Projects";
 }
 
 <div id="projects" class="middle">
     <div class="project-header">
-        <h2>Projects</h2>
+        <h2>@ViewData["Title"] </h2>
         <button class="btn" data-type="modal" data-target="#add-project-modal">
             <i class="fa-duotone fa-solid fa-plus"></i>
             <span>Add Projects</span>

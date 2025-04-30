@@ -602,12 +602,11 @@ select {
       ================================================================= */
 .field-validation-error {
     color: var(--red);
-    display: none;
+    
 }
 
 .input-validation-error {
-    border-color: rgb(248, 223, 218);
-    color: rgb(248, 223, 218);
+    border-color: darkred;
 }
 
 /* =================================================================

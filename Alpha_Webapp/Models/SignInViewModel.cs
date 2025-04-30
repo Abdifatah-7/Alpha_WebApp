@@ -2,7 +2,7 @@
 
 namespace Alpha_Webapp.Models;
 
-public class SignInFormModel
+public class SignInViewModel
 {
     [DataType(DataType.EmailAddress)]
     [Display(Name = "Email", Prompt = "Enter Your email")]

@@ -11,9 +11,9 @@ public interface IAppUserService
     Task<AppUserResult> GetByIdAsync(string id);
 }
 
-public class AppUserService(AppUserRepository appUserRepository) : IAppUserService
+public class AppUserService(IAppUserRepository appUserRepository) : IAppUserService
 {
-    private readonly AppUserRepository _appUserRepository = appUserRepository;
+    private readonly IAppUserRepository _appUserRepository = appUserRepository;
 
     public async Task<AppUserResult> GetAppUsersAsync()
     {

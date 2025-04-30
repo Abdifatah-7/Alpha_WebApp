@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
@@ -17,19 +17,20 @@ builder.Services.AddIdentity<AppUserEntity, IdentityRole>(x =>
     x.Password.RequireNonAlphanumeric = true;
     x.Password.RequireDigit = true;
     x.User.RequireUniqueEmail = true;
-});
+})
+.AddEntityFrameworkStores<ApplicationDbContext>() 
+.AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(x =>
 {
     x.LoginPath = "/auth/signin";
     x.LogoutPath = "/auth/signout";
     x.AccessDeniedPath = "/auth/denied";
-    x.Cookie.Expiration = TimeSpan.FromMinutes(45);
+    x.ExpireTimeSpan = TimeSpan.FromMinutes(45);
     x.SlidingExpiration = true;
     x.Cookie.HttpOnly = true;
     x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
-
 
 // Register Repositories
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
@@ -44,10 +45,6 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IAppUserService, AppUserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-
-
-
-
 var app = builder.Build();
 app.UseHsts();
 app.UseHttpsRedirection();
@@ -59,7 +56,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Projects}/{action=Index}/{id?}")
+    pattern: "{controller=Auth}/{action=SignUp}/{id?}")
     .WithStaticAssets();
 
 app.Run();
