@@ -53,7 +53,7 @@ public class AuthController(IAuthService authService) : Controller
         return View();
     }
 
-    //Här är hanteras submittet formen 
+   
     [HttpPost]
     
     public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = "~/")

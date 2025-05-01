@@ -8,7 +8,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 {
     public virtual DbSet<ProjectEntity> Projects { get; set; }
-    public virtual DbSet<ClientEntity> Clients { get; set; }
     public virtual DbSet<StatusEntity> Statuses { get; set; }
 
 
@@ -30,11 +29,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(u => u.Projects)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
-
-        modelBuilder.Entity<ProjectEntity>()
-            .HasOne(p => p.Client)
-            .WithMany(c => c.Projects)
-            .HasForeignKey(p => p.ClientId);
 
         modelBuilder.Entity<ProjectEntity>()
             .HasOne(p => p.Status)

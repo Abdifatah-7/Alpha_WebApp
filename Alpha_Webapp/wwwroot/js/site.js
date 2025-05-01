@@ -83,6 +83,7 @@ function setupImageUpload() {
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*'; // Accept only images
+            fileInput.name = 'Image';
             fileInput.style.display = 'none';
             fileInput.name = 'projectImage';
             document.body.appendChild(fileInput);
@@ -109,6 +110,9 @@ function setupImageUpload() {
                     reader.onload = function (e) {
                         // Update image source with the uploaded image
                         imageIcon.src = e.target.result;
+
+                        const hiddenInput = document.querySelector('input[name="Image"]');
+                        if (hiddenInput) hiddenInput.value = e.target.result; 
 
                         // Add CSS class to show that an image has been uploaded
                         imageIcon.classList.add('uploaded');
@@ -221,3 +225,54 @@ function setupTextEditors() {
         });
     }
 }
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Tab filter functionality
+    const tabs = document.querySelectorAll('.tab-bar .nav-tab');
+    const projectItems = document.querySelectorAll('.project-item');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+
+            // Add active class to clicked tab
+            this.classList.add('active');
+
+            // Get the filter value
+            const filter = this.getAttribute('data-filter');
+
+            // Filter projects
+            projectItems.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = '';
+                } else {
+                    const status = item.getAttribute('data-status');
+                    item.style.display = (status === filter) ? '' : 'none';
+                }
+            });
+        });
+    });
+
+    // Update tab counts
+    function updateTabCounts() {
+        const allCount = document.querySelectorAll('.project-item').length;
+        const startedCount = document.querySelectorAll('.project-item[data-status="started"]').length;
+        const completedCount = document.querySelectorAll('.project-item[data-status="completed"]').length;
+
+        document.querySelector('[data-filter="all"]').textContent = `ALL [${allCount}]`;
+        document.querySelector('[data-filter="started"]').textContent = `STARTED [${startedCount}]`;
+        document.querySelector('[data-filter="completed"]').textContent = `COMPLETED [${completedCount}]`;
+    }
+
+    // Update counts when page loads
+    updateTabCounts();
+});

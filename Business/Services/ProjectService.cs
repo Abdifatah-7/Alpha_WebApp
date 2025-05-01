@@ -14,10 +14,9 @@ public interface IProjectService
     Task<ProjectResult> UpdateProjectAsync(ProjectDto projectDto);
 }
 
-public class ProjectService(IProjectRepository projectRepository, IClientRepository clientRepository, IStatusRepository statusRepository) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IStatusRepository statusRepository) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
-    private readonly IClientRepository _clientRepository = clientRepository;
     private readonly IStatusRepository _statusRepository = statusRepository;
     public async Task<ProjectResult> CreateProjectAsync(ProjectDto projectDto)
     {
@@ -37,12 +36,21 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
                 Error = "End date cannot be before start date"
             };
 
+        if (projectDto.AppUser == null)
+            return new ProjectResult
+            {
+                Succeeded = false,
+                StatusCode = 400,
+                Error = "AppUser is required"
+            };
+
+
 
 
 
         var projectExists = await _projectRepository.ExistsAsync(p =>
             p.ProjectName == projectDto.ProjectName &&
-            p.ClientId == projectDto.Client.ClientId);
+            p.ClientName == projectDto.ClientName);
 
         if (projectExists.Succeeded && projectExists.Result)
             return new ProjectResult
@@ -72,7 +80,7 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
             Budget = projectDto.Budget,
             Image = projectDto.Image,
             UserId = projectDto.AppUser.Id,
-            ClientId = projectDto.Client.ClientId,
+            ClientName = projectDto.ClientName,
             StatusId = projectDto.Status.Id,
             Created = DateTime.Now
         };
@@ -95,7 +103,6 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
                 sortBy: s => s.Created,
                 where: null,
                 include => include.User,
-                include => include.Client,
                 include => include.Status
             );
 
@@ -126,7 +133,6 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
             (
                 where: x => x.ProjectId == id,
                 include => include.User,
-                include => include.Client,
                 include => include.Status
             );
 
@@ -178,16 +184,6 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
                 Error = "Project not found"
             };
 
-        // Kontrollera att klienten finns
-        var clientExists = await _clientRepository.ExistsAsync(c => c.ClientId == projectDto.Client.ClientId);
-        if (!clientExists.Succeeded || !clientExists.Result)
-            return new ProjectResult
-            {
-                Succeeded = false,
-                StatusCode = 400,
-                Error = "Selected client does not exist"
-            };
-
         // Kontrollera att statusen finns
         var statusExists = await _statusRepository.ExistsAsync(s => s.Id == projectDto.Status.Id);
         if (!statusExists.Succeeded || !statusExists.Result)
@@ -206,7 +202,7 @@ public class ProjectService(IProjectRepository projectRepository, IClientReposit
         entity.EndDate = projectDto.EndDate;
         entity.Budget = projectDto.Budget;
         entity.Image = projectDto.Image;
-        entity.ClientId = projectDto.Client.ClientId;
+        entity.ClientName = projectDto.ClientName;
         entity.StatusId = projectDto.Status.Id;
 
         var result = await _projectRepository.UpdateAsync(entity);

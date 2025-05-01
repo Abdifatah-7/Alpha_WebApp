@@ -14,6 +14,8 @@ public class ProjectEntity
 
     public string? Description { get; set; }
 
+    public string ClientName { get; set; } = null!;
+
     [DataType(DataType.Date)]
     public DateOnly StartDate { get; set; }
 
@@ -28,13 +30,6 @@ public class ProjectEntity
     [ForeignKey(nameof(User))]
     public string UserId { get; set; } =null!;
     public AppUserEntity User { get; set; } = null!;
-
-
-    [ForeignKey(nameof(Client))]
-    public int ClientId { get; set; }
-    public ClientEntity Client { get; set; } = null!;
-
-
 
     [ForeignKey(nameof(Status))]
     public int StatusId { get; set; }

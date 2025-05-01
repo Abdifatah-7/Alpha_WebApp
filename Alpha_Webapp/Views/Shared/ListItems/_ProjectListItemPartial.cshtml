@@ -1,18 +1,20 @@
-﻿<div class="surface project-container">
+﻿@model ProjectViewModel
+
+<div class="surface project-container project-item" data-status="@Model.StatusName.ToLower()">
     <div class="project-list-header">
         <div class="project-image">
-            <img class="project-img" src="/Images/card-image.svg" alt="ProfilIcon">
+            <img class="project-img" src="@Model.Image" alt="@Model.ProjectName">
         </div>
-        <h6 class="project-name">Website Redesign</h6>
-        <span class="client-name">GitLab Inc.</span>
-        <button class="ellipsis-btn" type="button" date-type="dropdown" data-target="#project-dropdown-2">
+        <h6 class="project-name"> @Model.ProjectName</h6>
+        <span class="client-name">@Model.ClientName.</span>
+        <button class="ellipsis-btn" type="button" date-type="dropdown" data-target="#project-dropdown-@Model.ProjectId">
             <i class="fa-solid fa-ellipsis"></i>
         </button>
 
 
-        <div id="project-dropdown-2" class="edit-sektion surface">
+        <div id="project-dropdown-@Model.ProjectId" class="edit-sektion surface">
             <div class="project-action">
-                <button data-type="modal" data-target="#edit-project-modal" class="edit" href="#">
+                <button data-type="modal" data-target="#edit-project-modal" data-project-id="@Model.ProjectId" class="edit" href="#">
                     <i class="fa-duotone fa-solid fa-pen-to-square"></i>
                     <span>Edit</span>
                 </button>
@@ -29,7 +31,9 @@
     </div>
 
     <div class="project-list-body">
-        <p>Lorem ipsum m doloru consequatur, tenetur incidunt. Amet blanditiis, eius nihil beatae error omnis. Tempore distinctio incidunt explicabo?</p>
+        @Html.Raw(Model.Description)
     </div>
 
 </div>
+
+<script src="~/js/site.js"></script>

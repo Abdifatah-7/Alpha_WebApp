@@ -1,4 +1,7 @@
-﻿<section id="add-project-modal" class="modal">
+﻿@model AddProjectViewModel
+
+
+<section id="add-project-modal" class="modal">
     <div class="surface modal-container">
 
         <div class="modal-header">
@@ -8,28 +11,29 @@
 
         <div class="modal-body">
 
-            <form asp-action="" asp-controller=" " method="post" enctype="multipart/form-data" novalidate>
-
+            <form asp-action="Create" asp-controller="Projects" method="post" enctype="multipart/form-data" novalidate>
+                @Html.AntiForgeryToken()
 
                 <div class="upload-image">
-                    <img class="image-icon" data-type="file" src="/Images/project-icon.svg" alt="Project Image">
+                    <img  class="image-icon" data-type="file" src="/Images/project-icon.svg" alt="Project Image">
+                    <input asp-for="Image" type="hidden">
                 </div>
 
                 <div class="form-input">
-                    <label>Project Name</label>
-                    <input type="text" placeholder="Project Name">
-                    <span class="field-validation-error"> Required</span>
+                    <label asp-for="ProjectName" ></label>
+                    <input asp-for="ProjectName">
+                    <span asp-validation-for="ProjectName"></span>
                 </div>
 
                 <div class="form-input">
-                    <label>Client Name</label>
-                    <input placeholder="Client Name">
-                    <span class="field-validation-error"> Required</span>
+                    <label asp-for="ClientName"></label>
+                    <input asp-for="ClientName">
+                    <span asp-validation-for="ClientName"></span>
                 </div>
 
                 <div class="form-input">
-                    <label class="form-label">Description</label>
-                    <textarea id="add-project-description" class="hide"></textarea>
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea asp-for="Description" id="add-project-description" class="hide"></textarea>
                     <div class="wysiwyg">
                         <div id="add-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
                         <div id="add-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
@@ -58,33 +62,36 @@
                 <div class="date-container">
 
                     <div class="form-input">
-                        <label> Start Date</label>
-                        <input type="date">
+                        <label asp-for="StartDate"></label>
+                        <input asp-for="StartDate" type="date">
+                        <span asp-validation-for="StartDate" class="field-validation-error"></span>
                     </div>
 
                     <div class="form-input">
-                        <label> End Date</label>
-                        <input type="date">
+                        <label asp-for="EndDate" ></label>
+                        <input asp-for="EndDate" type="date">
+                        <span asp-validation-for="EndDate" class="field-validation-error"></span>
                     </div>
 
                 </div>
 
 
                 <div class="select-input">
-                    <label>Status</label>
-                    <select>
-                        <option selected>Started</option>
-                        <option value="2">Compelet</option>
+                    <label asp-for="Status"></label>
+                    <select asp-for="Status" >
+                        <option value="1" selected>Started</option>
+                        <option value="2">Completed</option>
                     </select>
+                    <span asp-validation-for="Status" class="field-validation-error"></span>
                 </div>
 
                 <div class="form-input">
-                    <label>Budget</label>
+                    <label asp-for="Budget" ></label>
                     <div class="form-input-extented">
-                        <input type="text" class="form-input">
+                        <input asp-for="Budget" type="number" step="0.01" class="form-input">
                         <i class="fa-duotone fa-solid fa-dollar-sign"></i>
                     </div>
-                    <span class="field-validation-error"> Required</span>
+                    <span asp-validation-for="Budget" class="field-validation-error"></span>
                 </div>
 
                 <button type="submit" class="btn">Create</button>

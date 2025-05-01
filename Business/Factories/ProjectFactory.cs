@@ -10,11 +10,11 @@ public static class ProjectFactory
     {
         ProjectName = form.ProjectName,
         Description = form.Description,
+        ClientName = form.ClientName,
         StartDate = form.StartDate,
         EndDate = form.EndDate,
         Budget = form.Budget,
         Image = form.Image,
-        ClientId = form.Client?.ClientId ?? 0,
         StatusId = form.Status?.Id ?? 0
     };
 
@@ -24,11 +24,11 @@ public static class ProjectFactory
         ProjectId = entity.ProjectId,
         ProjectName = entity.ProjectName,
         Description = entity.Description,
+        ClientName = entity.ClientName,
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
         Budget = entity.Budget,
         Image = entity.Image,
-        Client = entity.Client != null ? ClientFactory.Create(entity.Client) : null!,
         AppUser = entity.User != null ? AppUserFactory.Create(entity.User) : null!,
         Status = entity.Status != null ? StatusFactory.Create(entity.Status) : null!
 

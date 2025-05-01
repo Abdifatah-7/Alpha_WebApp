@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ProjectsViewModel
+
+@{
     Layout = "_BackOfficeWrapperLayout";
     ViewData["Title"] = "Projects";
 }
@@ -13,20 +15,33 @@
     </div>
 
     <div class="tab-bar">
-        <a class="nav-tab active" href="#">ALL [0]</a>
-        <a class="nav-tab" href="#">STARTED [0]</a>
-        <a class="nav-tab" href="#">COMPELETED [0]</a>
+        <a class="nav-tab active" href="#" data-filter="all">
+            ALL [@Model.Projects.Count()]
+        </a>
+        <a class="nav-tab" href="#" data-filter="started">
+            STARTED [@Model.Projects.Count(p => p.StatusName == "Started")]
+        </a>
+        <a class="nav-tab" href="#" data-filter="completed">
+            COMPLETED [@Model.Projects.Count(p => p.StatusName == "Completed")]
+        </a>
     </div>
 
 
 
     <div class="project-list" data-project-id="2">
 
-        @await Html.PartialAsync("ListItems/_ProjectListItemPartial")
-        @await Html.PartialAsync("ListItems/_ProjectListItemPartial")
+        @if (Model.Projects != null && Model.Projects.Any())
+        {
+            @foreach (var project in Model.Projects)
+            {
+                @await Html.PartialAsync("ListItems/_ProjectListItemPartial", project)
+            }
+        }
+
+
 
     </div>
 
-    @await Html.PartialAsync("Modals/_AddProjectModalPartial")
-    @await Html.PartialAsync("Modals/_EditProjectModalPartial")
+    @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
+    @await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)
 </div>
