@@ -104,7 +104,7 @@ public class ProjectsController(IProjectService projectService, IStatusService s
 
         // Call the service to create the project
         var result = await _projectService.CreateProjectAsync(projectDto);
-
+          
 
         if (!result.Succeeded)
         {
