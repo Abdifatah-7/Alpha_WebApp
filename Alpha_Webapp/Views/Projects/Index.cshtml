@@ -26,7 +26,7 @@
         </a>
     </div>
 
-
+     
 
     <div class="project-list" data-project-id="2">
 
@@ -44,4 +44,15 @@
 
     @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
     @await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)
+
+
+
+
+
+
+    <!-- Hidden delete form -->
+    <form id="delete-project-form" asp-action="Delete" asp-controller="Projects" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" id="delete-project-id" />
+    </form>
 </div>

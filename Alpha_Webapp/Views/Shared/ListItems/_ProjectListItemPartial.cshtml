@@ -1,33 +1,42 @@
 ﻿@model ProjectViewModel
 
-<div class="surface project-container project-item" data-status="@Model.StatusName.ToLower()">
+<div class="surface project-container project-item"
+     data-project-id="@Model.ProjectId"
+     data-project-name="@Model.ProjectName"
+     data-client-name="@Model.ClientName"
+     data-start-date="@Model.StartDate.ToString("yyyy-MM-dd")"
+     data-end-date="@Model.EndDate.ToString("yyyy-MM-dd")"
+     data-budget="@Model.Budget"
+     data-description='@Html.Raw(Model.Description)'
+     data-image="@Model.Image"
+     data-status="@Model.StatusName.ToLower()">
+
     <div class="project-list-header">
         <div class="project-image">
             <img class="project-img" src="@Model.Image" alt="@Model.ProjectName">
         </div>
-        <h6 class="project-name"> @Model.ProjectName</h6>
-        <span class="client-name">@Model.ClientName.</span>
-        <button class="ellipsis-btn" type="button" date-type="dropdown" data-target="#project-dropdown-@Model.ProjectId">
+        <h6 class="project-name">@Model.ProjectName</h6>
+        <span class="client-name">@Model.ClientName</span>
+
+        <button class="ellipsis-btn" type="button" data-type="dropdown" data-target="#project-dropdown-@Model.ProjectId">
             <i class="fa-solid fa-ellipsis"></i>
         </button>
 
-
         <div id="project-dropdown-@Model.ProjectId" class="edit-sektion surface">
             <div class="project-action">
-                <button data-type="modal" data-target="#edit-project-modal" data-project-id="@Model.ProjectId" class="edit" href="#">
+                <button data-type="modal" data-target="#edit-project-modal" data-project-id="@Model.ProjectId" class="edit">
                     <i class="fa-duotone fa-solid fa-pen-to-square"></i>
                     <span>Edit</span>
                 </button>
 
                 <div class="diverders"></div>
 
-                <button class="delete" href="#">
+                <button class="delete" data-project-id="@Model.ProjectId" data-project-name="@Model.ProjectName">
                     <i class="fa-duotone fa-solid fa-trash-can"></i>
                     <span>Delete Project</span>
                 </button>
             </div>
         </div>
-
     </div>
 
     <div class="project-list-body">
@@ -35,5 +44,3 @@
     </div>
 
 </div>
-
-<script src="~/js/site.js"></script>

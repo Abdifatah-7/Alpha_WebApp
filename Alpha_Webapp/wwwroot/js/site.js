@@ -1,72 +1,50 @@
-﻿/* =================================================================
-   DOCUMENT READY
-   ================================================================= */
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize all components
+﻿document.addEventListener('DOMContentLoaded', function () {
     setupDropdowns();
     setupImageUpload();
     setupModal();
     setupTextEditors();
+    setupTabs();
+    setupEditButtons();
+    setupDeleteButtons();
 });
 
 /* =================================================================
    DROPDOWN FUNCTIONALITY
    ================================================================= */
 function setupDropdowns() {
-    // Find all dropdown buttons
-    const dropdownButtons = document.querySelectorAll('[date-type="dropdown"]');
+    const dropdownButtons = document.querySelectorAll('[data-type="dropdown"]');
 
-    // Function to close all dropdowns
     function closeAllDropdowns() {
-        // Get all dropdown elements
-        const dropdowns = document.querySelectorAll('#account-dropdown, #project-dropdown-1, #project-dropdown-2, [id^="project-dropdown-"]');
-        dropdowns.forEach(dropdown => {
+        document.querySelectorAll('#account-dropdown, [id^="project-dropdown-"]').forEach(dropdown => {
             dropdown.style.display = 'none';
         });
     }
 
-    // Hide all dropdowns initially
     closeAllDropdowns();
 
-    // Add click event for each dropdown button
     dropdownButtons.forEach(button => {
         button.addEventListener('click', function (event) {
             event.stopPropagation();
-
-            // Get target dropdown from data-target attribute
             const targetId = this.getAttribute('data-target');
-            const dropdownElement = document.querySelector(targetId);
+            const dropdown = document.querySelector(targetId);
+            if (!dropdown) return;
 
-            if (dropdownElement) {
-                // Check if this dropdown is already open
-                const isOpen = dropdownElement.style.display === 'block';
-
-                // Close all dropdowns first
-                closeAllDropdowns();
-
-                // Toggle the current one (open if closed, close if open)
-                dropdownElement.style.display = isOpen ? 'none' : 'block';
-            }
-        });
-    });
-
-    // Close dropdowns when clicking anywhere else on the page
-    document.addEventListener('click', function () {
-        closeAllDropdowns();
-    });
-
-    // Prevent closing when clicking inside the dropdown content
-    document.querySelectorAll('#account-dropdown, [id^="project-dropdown-"]').forEach(dropdown => {
-        dropdown.addEventListener('click', function (event) {
-            event.stopPropagation();
-        });
-    });
-
-    // Close dropdown after clicking an action item (buttons and links)
-    document.querySelectorAll('#account-dropdown a, #account-dropdown button, [id^="project-dropdown-"] button').forEach(element => {
-        element.addEventListener('click', function () {
+            const isOpen = dropdown.style.display === 'block';
             closeAllDropdowns();
+            dropdown.style.display = isOpen ? 'none' : 'block';
         });
+    });
+
+    document.addEventListener('click', closeAllDropdowns);
+
+    document.querySelectorAll('#account-dropdown, [id^="project-dropdown-"]').forEach(dropdown => {
+        dropdown.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+    });
+
+    document.querySelectorAll('#account-dropdown a, #account-dropdown button, [id^="project-dropdown-"] button').forEach(el => {
+        el.addEventListener('click', closeAllDropdowns);
     });
 }
 
@@ -74,55 +52,36 @@ function setupDropdowns() {
    IMAGE UPLOAD FUNCTIONALITY
    ================================================================= */
 function setupImageUpload() {
-    // Find image icon and add click event
     const imageIcons = document.querySelectorAll('.image-icon[data-type="file"]');
 
-    imageIcons.forEach(imageIcon => {
-        if (imageIcon) {
-            // Create hidden file input element
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*'; // Accept only images
-            fileInput.name = 'Image';
-            fileInput.style.display = 'none';
-            fileInput.name = 'projectImage';
-            document.body.appendChild(fileInput);
+    imageIcons.forEach(icon => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.name = 'Image';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
 
-            // When user clicks on image icon, trigger file input
-            imageIcon.addEventListener('click', function () {
-                fileInput.click();
-            });
+        icon.addEventListener('click', () => fileInput.click());
 
-            // When a file is selected, show preview
-            fileInput.addEventListener('change', function () {
-                if (this.files && this.files[0]) {
-                    const file = this.files[0];
-
-                    // Check if file is an image
-                    if (!file.type.match('image.*')) {
-                        alert('Vänligen välj en bildfil (jpeg, png, gif, etc.)');
-                        return;
-                    }
-
-                    // Show preview
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        // Update image source with the uploaded image
-                        imageIcon.src = e.target.result;
-
-                        const hiddenInput = document.querySelector('input[name="Image"]');
-                        if (hiddenInput) hiddenInput.value = e.target.result; 
-
-                        // Add CSS class to show that an image has been uploaded
-                        imageIcon.classList.add('uploaded');
-                    };
-
-                    // Read file as DataURL for preview
-                    reader.readAsDataURL(file);
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (!file.type.match('image.*')) {
+                    alert('Vänligen välj en bildfil.');
+                    return;
                 }
-            });
-        }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    icon.src = e.target.result;
+                    icon.classList.add('uploaded');
+                    const hiddenInput = document.querySelector('input[name="Image"]');
+                    if (hiddenInput) hiddenInput.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     });
 }
 
@@ -130,57 +89,32 @@ function setupImageUpload() {
    MODAL FUNCTIONALITY
    ================================================================= */
 function setupModal() {
-    // Hide all modals initially
-    const allModals = document.querySelectorAll('.modal');
-    allModals.forEach(modal => {
-        modal.style.display = 'none';
-    });
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 
-    // Find elements to open modal
-    const modalButtons = document.querySelectorAll('[data-type="modal"]');
-
-    // Find elements to close modal
-    const closeButtons = document.querySelectorAll('[data-type="close"]');
-
-    // Listen for clicks to open modal
-    modalButtons.forEach(button => {
+    document.querySelectorAll('[data-type="modal"]').forEach(button => {
         button.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const modal = document.querySelector(targetId);
-
+            const modal = document.querySelector(this.getAttribute('data-target'));
             if (modal) {
-                // Show modal
                 modal.style.display = 'flex';
-                // Prevent scrolling on body when modal is open
                 document.body.style.overflow = 'hidden';
             }
         });
     });
 
-    // Listen for clicks to close modal
-    closeButtons.forEach(button => {
+    document.querySelectorAll('[data-type="close"]').forEach(button => {
         button.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const modal = document.getElementById(targetId);
-
+            const modal = document.getElementById(this.getAttribute('data-target'));
             if (modal) {
-                // Hide modal
                 modal.style.display = 'none';
-                // Restore scrolling on body
                 document.body.style.overflow = '';
             }
         });
     });
 
-    // Close modal when user clicks outside content
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.addEventListener('click', function (event) {
-            // Check if click was directly on modal background (not on content)
-            if (event.target === this) {
-                // Hide modal
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function (e) {
+            if (e.target === this) {
                 this.style.display = 'none';
-                // Restore scrolling on body
                 document.body.style.overflow = '';
             }
         });
@@ -188,91 +122,117 @@ function setupModal() {
 }
 
 /* =================================================================
-   RICH TEXT EDITOR (QUILL)
+   RICH TEXT EDITORS (QUILL)
    ================================================================= */
 function setupTextEditors() {
-    // Setup Add Project Description Editor
-    const addProjectDescriptionTextarea = document.getElementById('add-project-description');
-    if (addProjectDescriptionTextarea) {
-        const addProjectDescriptionQuill = new Quill('#add-project-description-wysiwyg-editor', {
-            modules: {
-                syntax: true,
-                toolbar: '#add-project-description-wysiwyg-toolbar'
-            },
-            theme: 'snow',
-            placeholder: 'Type something'
+    const addTextArea = document.getElementById('add-project-description');
+    if (addTextArea) {
+        const addQuill = new Quill('#add-project-description-wysiwyg-editor', {
+            modules: { toolbar: '#add-project-description-wysiwyg-toolbar' },
+            theme: 'snow'
         });
-
-        addProjectDescriptionQuill.on('text-change', function () {
-            addProjectDescriptionTextarea.value = addProjectDescriptionQuill.root.innerHTML;
+        addQuill.on('text-change', () => {
+            addTextArea.value = addQuill.root.innerHTML;
         });
     }
 
-    // Setup Edit Project Description Editor
-    const editProjectDescriptionTextarea = document.getElementById('edit-project-description');
-    if (editProjectDescriptionTextarea) {
-        const editProjectDescriptionQuill = new Quill('#edit-project-description-wysiwyg-editor', {
-            modules: {
-                syntax: true,
-                toolbar: '#edit-project-description-wysiwyg-toolbar'
-            },
-            theme: 'snow',
-            placeholder: 'Type something'
+    const editTextArea = document.getElementById('edit-project-description');
+    if (editTextArea) {
+        window.editProjectQuill = new Quill('#edit-project-description-wysiwyg-editor', {
+            modules: { toolbar: '#edit-project-description-wysiwyg-toolbar' },
+            theme: 'snow'
         });
-
-        editProjectDescriptionQuill.on('text-change', function () {
-            editProjectDescriptionTextarea.value = editProjectDescriptionQuill.root.innerHTML;
+        window.editProjectQuill.on('text-change', () => {
+            editTextArea.value = window.editProjectQuill.root.innerHTML;
         });
     }
 }
 
+/* =================================================================
+   EDIT PROJECT FUNCTIONALITY
+   ================================================================= */
+function setupEditButtons() {
+    document.querySelectorAll('.edit').forEach(button => {
+        button.addEventListener('click', () => {
+            const item = button.closest('.project-item');
+            if (!item) return;
 
+            document.querySelector('input[name="ProjectId"]').value = item.dataset.projectId;
+            document.querySelector('input[name="ProjectName"]').value = item.dataset.projectName;
+            document.querySelector('input[name="ClientName"]').value = item.dataset.clientName;
+            document.querySelector('input[name="StartDate"]').value = item.dataset.startDate;
+            document.querySelector('input[name="EndDate"]').value = item.dataset.endDate;
+            document.querySelector('input[name="Budget"]').value = item.dataset.budget;
+            document.querySelector('input[name="Image"]').value = item.dataset.image;
+            document.querySelector('select[name="Status"]').value =
+                item.dataset.status === 'started' ? '1' : '2';
 
+            if (window.editProjectQuill) {
+                editProjectQuill.root.innerHTML = item.dataset.description;
+                document.getElementById('edit-project-description').value = item.dataset.description;
+            }
 
+            document.getElementById('edit-project-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+}
 
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Tab filter functionality
+/* =================================================================
+   TABS + FILTERING
+   ================================================================= */
+function setupTabs() {
     const tabs = document.querySelectorAll('.tab-bar .nav-tab');
     const projectItems = document.querySelectorAll('.project-item');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', function (e) {
             e.preventDefault();
-
-            // Remove active class from all tabs
             tabs.forEach(t => t.classList.remove('active'));
-
-            // Add active class to clicked tab
             this.classList.add('active');
 
-            // Get the filter value
             const filter = this.getAttribute('data-filter');
-
-            // Filter projects
             projectItems.forEach(item => {
-                if (filter === 'all') {
-                    item.style.display = '';
-                } else {
-                    const status = item.getAttribute('data-status');
-                    item.style.display = (status === filter) ? '' : 'none';
-                }
+                const status = item.getAttribute('data-status');
+                item.style.display = (filter === 'all' || status === filter) ? '' : 'none';
             });
         });
     });
 
-    // Update tab counts
-    function updateTabCounts() {
-        const allCount = document.querySelectorAll('.project-item').length;
+    const updateTabCounts = () => {
+        const allCount = projectItems.length;
         const startedCount = document.querySelectorAll('.project-item[data-status="started"]').length;
         const completedCount = document.querySelectorAll('.project-item[data-status="completed"]').length;
 
         document.querySelector('[data-filter="all"]').textContent = `ALL [${allCount}]`;
         document.querySelector('[data-filter="started"]').textContent = `STARTED [${startedCount}]`;
         document.querySelector('[data-filter="completed"]').textContent = `COMPLETED [${completedCount}]`;
-    }
+    };
 
-    // Update counts when page loads
     updateTabCounts();
-});
+}
+
+
+
+/* =================================================================
+   Delete PROJECT FUNCTIONALITY
+   ================================================================= */
+
+function setupDeleteButtons() {
+    document.querySelectorAll('.delete').forEach(button => {
+        button.addEventListener('click', () => {
+            const projectId = button.dataset.projectId;
+            const projectName = button.dataset.projectName;
+
+            const confirmed = confirm(`Are you sure you want to delete "${projectName}"?`);
+            if (confirmed) {
+                const form = document.getElementById('delete-project-form');
+                document.getElementById('delete-project-id').value = projectId;
+                form.submit();
+            }
+        });
+    });
+}
+
+
+

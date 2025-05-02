@@ -11,31 +11,32 @@
 
         <div class="modal-body">
 
-            <form asp-action="" asp-controller=" " method="post" enctype="multipart/form-data" novalidate>
-
+            <form asp-action="Edit" asp-controller="Projects" method="post" enctype="multipart/form-data" novalidate>
+                @Html.AntiForgeryToken()
 
                 <div class="upload-image">
                     <img class="image-icon" data-type="file" src="/Images/project-icon.svg" alt="Project Image">
+                    <input asp-for="Image" type="hidden">
                 </div>
 
                 <div class="form-input">
-                    <label>Project Name</label>
-                    <input type="text" placeholder="Project Name">
-                    <span class="field-validation-error"> Required</span>
+                    <label asp-for="ProjectName"></label>
+                    <input asp-for="ProjectName" />
+                    <input asp-for="ProjectId" type="hidden" />
+
+                    <span asp-validation-for="ProjectName"></span>
+
                 </div>
 
                 <div class="form-input">
-                    <label>Client Name</label>
-                    <input placeholder="Client Name">
-                    <span class="field-validation-error"> Required</span>
+                    <label asp-for="ClientName"></label>
+                    <input asp-for="ClientName" />
+                    <span asp-validation-for="ClientName"></span>
                 </div>
 
                 <div class="form-input">
-                    <label class="form-label">Description</label>
-                    <textarea id="edit-project-description" class="hide">
-                    <p>You need to develop an web application on that simulates a admin
-                      portal for projects. It will need both a light mode design and a dark mode design.</p>
-                  </textarea>
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" id="edit-project-description" class="hide"></textarea>
                     <div class="wysiwyg">
                         <div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
                         <div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
@@ -64,33 +65,34 @@
                 <div class="date-container">
 
                     <div class="form-input">
-                        <label> Start Date</label>
-                        <input type="date">
+                        <label asp-for="StartDate" > </label>
+                        <input asp-for="StartDate" type="date">
+                        <span asp-validation-for="StartDate"></span>
                     </div>
 
                     <div class="form-input">
-                        <label> End Date</label>
-                        <input type="date">
+                        <label asp-for="EndDate"> </label>
+                        <input asp-for="EndDate" type="date">
+                        <span asp-validation-for="EndDate"></span>
                     </div>
 
                 </div>
 
 
                 <div class="select-input">
-                    <label>Status</label>
-                    <select>
-                        <option selected>Started</option>
-                        <option value="2">Compelet</option>
-                    </select>
+                    <label asp-for="Status" >Status</label>
+                    <select asp-for="Status" asp-items="Model.Statuses"></select>
+
+                    <span asp-validation-for="Status"></span>
                 </div>
 
                 <div class="form-input">
-                    <label>Budget</label>
+                    <label asp-for="Budget" ></label>
                     <div class="form-input-extented">
-                        <input type="text" class="form-input">
+                        <input asp-for="Budget" type="number" class="form-input">
                         <i class="fa-duotone fa-solid fa-dollar-sign"></i>
                     </div>
-                    <span class="field-validation-error"> Required</span>
+                    <span asp-validation-for="Budget"></span>
                 </div>
 
                 <button type="submit" class="btn">Create</button>

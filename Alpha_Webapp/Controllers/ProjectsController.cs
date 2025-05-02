@@ -55,6 +55,18 @@ public class ProjectsController(IProjectService projectService, IStatusService s
         ViewBag.TabCounts = (all, started, completed);
 
 
+        //För att fylla i dropdown för status i edit
+        var statusResult = await _statusService.GetStatusesAsync();
+        var editModel = new EditProjectViewModel
+        {
+            Statuses = statusResult.Result?.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.StatusName
+            }).ToList() ?? []
+        };
+        model.EditProjectFormData = editModel;
+
 
 
         return View(model);
@@ -132,5 +144,73 @@ public class ProjectsController(IProjectService projectService, IStatusService s
             Budget = dto.Budget
         };
     }
+
+
+
+    //Uppdatera projekt
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditProjectViewModel formData)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["ErrorMessage"] = "Formuläret är inte korrekt ifyllt.";
+            return RedirectToAction("Index");
+        }
+
+        var dto = new ProjectDto
+        {
+            ProjectId = formData.ProjectId,
+            ProjectName = formData.ProjectName,
+            ClientName = formData.ClientName,
+            Description = formData.Description,
+            StartDate = DateOnly.FromDateTime(formData.StartDate),
+            EndDate = DateOnly.FromDateTime(formData.EndDate),
+            Budget = formData.Budget,
+            Image = formData.Image,
+            Status = new StatusDto { Id = formData.Status },
+            AppUser = new AppUserDto { Id = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "default-user" }
+        };
+
+        var result = await _projectService.UpdateProjectAsync(dto);
+
+        if (!result.Succeeded)
+        {
+            TempData["ErrorMessage"] = result.Error;
+            return RedirectToAction("Index");
+        }
+
+        TempData["SuccessMessage"] = "Project updated successfully.";
+        return RedirectToAction("Index");
+    }
+
+
+    //Delete projekt
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            TempData["ErrorMessage"] = "Invalid project ID.";
+            return RedirectToAction("Index");
+        }
+
+        var result = await _projectService.DeleteProjectAsync(id);
+
+        if (!result.Succeeded)
+        {
+            TempData["ErrorMessage"] = result.Error ?? "Failed to delete project.";
+            return RedirectToAction("Index");
+        }
+
+        TempData["SuccessMessage"] = "Project deleted successfully.";
+        return RedirectToAction("Index");
+    }
+
+
 
 }

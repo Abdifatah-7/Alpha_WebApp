@@ -7,11 +7,15 @@ namespace Alpha_Webapp.Models
     {
         public IEnumerable<SelectListItem> Statuses { get; set; } = [];
 
+        public string ProjectId { get; set; } = null!;
+
+
         [Required(ErrorMessage = "Project name is required")]
         [Display(Name = "Project Name")]
         public string ProjectName { get; set; } = null!;
 
         [Display(Name = "Image URL")]
+        [DataType(DataType.Upload)]
         public string? Image { get; set; }
 
         [Required(ErrorMessage = "You must select a client")]
