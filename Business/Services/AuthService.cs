@@ -1,6 +1,10 @@
 ﻿using Business.Dtos;
 using Data.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Business.Services;
 
@@ -11,10 +15,11 @@ public interface IAuthService
     Task<AuthResult> SignUpAsync(SignUpDto signUpDto);
 }
 
-public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<AppUserEntity> signInManager) : IAuthService
+public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<AppUserEntity> signInManager, IHttpContextAccessor httpContextAccessor =null!) : IAuthService
 {
     private readonly UserManager<AppUserEntity> _userManager = userManager;
     private readonly SignInManager<AppUserEntity> _signInManager = signInManager;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<AuthResult> SignUpAsync(SignUpDto signUpDto)
     {
@@ -76,12 +81,9 @@ public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<A
 
     /// SignIn
 
-
     public async Task<AuthResult> SignInAsync(SignInDto signInDto)
     {
-        // Validera indata
-        if (string.IsNullOrWhiteSpace(signInDto.Email) ||
-            string.IsNullOrWhiteSpace(signInDto.Password))
+        if (string.IsNullOrWhiteSpace(signInDto.Email) || string.IsNullOrWhiteSpace(signInDto.Password))
         {
             return new AuthResult
             {
@@ -91,7 +93,6 @@ public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<A
             };
         }
 
-        // Försök hitta användaren med e-post
         var user = await _userManager.FindByEmailAsync(signInDto.Email);
         if (user == null)
         {
@@ -103,13 +104,7 @@ public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<A
             };
         }
 
-        // Försök logga in användaren
-        var result = await _signInManager.PasswordSignInAsync(
-            user,
-            signInDto.Password,
-            isPersistent: signInDto.RememberMe,
-            lockoutOnFailure: false);
-
+        var result = await _signInManager.PasswordSignInAsync(user, signInDto.Password, signInDto.RememberMe, false);
         if (!result.Succeeded)
         {
             return new AuthResult
@@ -120,13 +115,26 @@ public class AuthService(UserManager<AppUserEntity> userManager, SignInManager<A
             };
         }
 
-        // Användaren har loggats in framgångsrikt
+        //Med hjälp av ChatGPT
+        // Lägg till FullName som en claim
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.FirstName), // eller använd en sammanslagen FullName
+        new Claim(ClaimTypes.Email, user.Email!)
+    };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
         return new AuthResult
         {
             Succeeded = true,
             StatusCode = 200
         };
     }
+
 
     //SignOut
 

@@ -2,6 +2,7 @@ using Business.Services;
 using Data.Contexts;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,13 @@ builder.Services.AddIdentity<AppUserEntity, IdentityRole>(x =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>() 
 .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/SignIn";
+    });
+
 
 builder.Services.ConfigureApplicationCookie(x =>
 {
@@ -57,5 +65,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=SignIn}/{id?}")
     .WithStaticAssets();
-
+builder.Services.AddHttpContextAccessor();
 app.Run();

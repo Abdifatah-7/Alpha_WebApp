@@ -12,7 +12,8 @@ public class SignInViewModel
 
     [DataType(DataType.Password)]
     [Display(Name = "Password", Prompt = "Enter Your password")]
-    [RegularExpression(@"^(?=.*[a-ö])(?=.*[A-Ö])(?=.*\d)(?=.*[\W_]).{8,}$", ErrorMessage = "You must enter strong password")]
+    [Required(ErrorMessage = "You must enter your password")]
+    [RegularExpression(@"^(?=.*[a-ö])(?=.*[A-Ö])(?=.*\d)(?=.*[\W_]).{8,}$", ErrorMessage = "You must enter a valid password")]
     public string Password { get; set; } = null!;
 
     public bool RememberMe { get; set; }

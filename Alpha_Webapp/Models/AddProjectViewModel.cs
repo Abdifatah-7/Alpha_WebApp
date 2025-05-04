@@ -12,6 +12,7 @@ namespace Alpha_Webapp.Models
         [Display(Name = "Project Name", Prompt = "Project Name")]
         public string ProjectName { get; set; } = null!;
 
+        [Required(ErrorMessage = "Image is required")]
         [Display(Name = "Image URL")]
         public string? Image { get; set; } 
 

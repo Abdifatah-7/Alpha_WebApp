@@ -6,7 +6,7 @@
         <div class="diverders"></div>
 
         <div class="profile-icon">
-            <button class="profile-btn" type="button" date-type="dropdown" data-target="#account-dropdown">
+            <button class="profile-btn" type="button" data-type="dropdown" data-target="#account-dropdown">
                 <img class="profile-img" src="/Images/profil-icon.svg" alt="ProfilIcon">
             </button>
         </div>
@@ -15,10 +15,10 @@
     <div id="account-dropdown" class="profile-section surface">
         <div class="account-name">
             <img class="profile-img" src="/Images/profil-icon.svg" alt="ProfilIcon">
-            <span>Tommy Mattin-Lassei</span>
+            <span>@User.Identity!.Name</span>
         </div>
 
-        <a asp-controller="Auth" asp-action="SignIn" class="logout-link">
+        <a asp-controller="Auth" asp-action="SignOut" class="logout-link">
             <img src="/Images/Logout-icon.svg" alt="Logout-icon">
             <span>Logout</span>
         </a>

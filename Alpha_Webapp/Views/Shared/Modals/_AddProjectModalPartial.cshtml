@@ -16,7 +16,8 @@
 
                 <div class="upload-image">
                     <img  class="image-icon" data-type="file" src="/Images/project-icon.svg" alt="Project Image">
-                    <input asp-for="Image" type="hidden">
+                    <input asp-for="Image" type="hidden" >
+                      <span asp-validation-for="ProjectName"></span>
                 </div>
 
                 <div class="form-input">

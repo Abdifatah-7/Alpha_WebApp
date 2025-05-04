@@ -29,5 +29,6 @@ public class SignUpViewModel
 
     [Display(Name ="Terms and Conditions ",Prompt= "I accept the terms and conditions. ")]
     [Range(typeof(bool) ,"true","true", ErrorMessage ="You must accept the terms and conditions in order to go an")]
+    [Required(ErrorMessage = "You must accept the terms and conditions.")]
     public bool TermsAndConditions { get; set; }
 }
